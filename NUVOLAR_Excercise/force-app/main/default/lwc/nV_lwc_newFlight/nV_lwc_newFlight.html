@@ -1,0 +1,193 @@
+<template>
+  <div>
+    <div>
+      <!--First form to introduce flights between depature and arrival airport-->
+      <div class="slds-modal__container">
+        <div class="slds-modal__header">
+          <h2 class="slds-text-heading_medium">New Flight</h2>
+        </div>
+
+        <div class="slds-modal__content slds-p-around_medium lgc-bg">
+          <p class="slds-text-heading_medium slds-m-bottom_medium">
+            Enter the following data to plan the next flight
+          </p>
+          <div class="slds-p-around_medium lgc-bg">
+            <lightning-input
+              type="text"
+              label="Departure Airport"
+              placeholder="e.g. BCN"
+              required
+              maxlength="3"
+              minlength="3"
+              name="departureAirport"
+              value={departureAirport}
+              onchange={checkAirport}
+              pattern="[a-zA-Z]+"
+              title="Please enter only letters"
+            ></lightning-input>
+
+            <lightning-input
+              type="text"
+              label="Arrival Airport"
+              placeholder="e.g. MAD"
+              required
+              maxlength="3"
+              minlength="3"
+              name="arrivalAirport"
+              value={arrivalAirport}
+              onchange={checkAirport}
+              pattern="[a-zA-Z]+"
+              title="Please enter only letters"
+            ></lightning-input>
+          </div>
+          <!--It shows an flight history retrieving data from SFDC-->
+          <lightning-card title="Flight History">
+            <div class="slds-m-around_medium">
+              <!-- Muestra la lista de vuelos -->
+              <template if:true={hasFlightData}>
+                <ul>
+                  <template
+                    for:each={flightDataList.data}
+                    for:item="flightData"
+                  >
+                    <li key={flightData.Id}>
+                      Departure: {flightData.departure} - Arrival:
+                      {flightData.arrival} - Distance: {flightData.distance} KM
+                    </li>
+                  </template>
+                </ul>
+              </template>
+            </div>
+          </lightning-card>
+        </div>
+        <!--If airports does not exist, it shows a popup asking to create one or cancel the current operation-->
+        <template if:true={aeropuertoKO}>
+          <div
+            class={modalNewAirport}
+            style="
+              z-index: 1001;
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            "
+          >
+            <div class="slds-modal__container">
+              <div class="slds-modal__header">
+                <h2 class="slds-text-heading_medium">No Airport Found</h2>
+              </div>
+              <div class="slds-modal__content slds-p-around_medium lgc-bg">
+                <p class="slds-text-heading_medium slds-m-bottom_medium">
+                  We don't seem to have this airport registered yet, would you
+                  like to register it?
+                </p>
+              </div>
+              <div class="slds-modal__footer">
+                <lightning-button
+                  label="Close"
+                  onclick={closeDialog}
+                ></lightning-button>
+                <lightning-button
+                  label="New Airport"
+                  onclick={registerNewAirport}
+                ></lightning-button>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!--Displays a fill-form to input airport data in order to create a new one-->
+        <template if:true={showNewAirportForm}>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+          <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+              <div class="slds-modal__header">
+                <h2 class="slds-text-heading_medium">New Airport Form</h2>
+              </div>
+              <div class="slds-modal__content slds-p-around_medium lgc-bg">
+                <lightning-input
+                  type="text"
+                  label="Airport Name"
+                  placeholder="e.g. Barcelona - El Prat"
+                  required
+                  maxlength="60"
+                  name="airportName"
+                  value={airportName}
+                  onchange={saveNewAirport}
+                ></lightning-input>
+
+                <lightning-input
+                  type="text"
+                  label="IATA"
+                  required
+                  disabled
+                  readonly
+                  maxlength="3"
+                  minlength="3"
+                  name="iataCode"
+                  value={iataCode}
+                  pattern="[a-zA-Z]+"
+                  title="Please enter only letters"
+                  onchange={saveNewAirport}
+                ></lightning-input>
+
+                <lightning-input
+                  type="number"
+                  label="Latitude"
+                  placeholder="e.g. 41,297445"
+                  required
+                  maxlength="10"
+                  name="latitudeAirport"
+                  value={latitudeAirport}
+                  pattern="-?[0-9]+(\,[0-9]+)?"
+                  title="Please enter only numbers. Permitted values -90 to +90."
+                  onchange={saveNewAirport}
+                ></lightning-input>
+                <div class="slds-form-element__help" id="errorMessageLatitude">
+                  Permitted values -90 to +90 e.g. -78,312322
+                </div>
+
+                <lightning-input
+                  type="number"
+                  label="Longitude"
+                  required
+                  maxlength="11"
+                  placeholder="e.g. 141,2974235"
+                  name="longitudeAirport"
+                  value={longitudeAirport}
+                  pattern="-?[0-9]+(\,[0-9]+)?"
+                  title="Please enter only numbers. Permitted values -180 to +180."
+                  onchange={saveNewAirport}
+                ></lightning-input>
+                <div class="slds-form-element__help" id="errorMessageLongitude">
+                  Permitted values -180 to +180 e.g. -178,000322
+                </div>
+              </div>
+              <div class="slds-modal__footer">
+                <lightning-button
+                  label="Close"
+                  onclick={closeDialog}
+                ></lightning-button>
+                <lightning-button
+                  label="Save Airport"
+                  onclick={handleSaveAirport}
+                ></lightning-button>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!--Footer details-->
+        <div class="slds-modal__footer customFooterClass">
+          <lightning-button
+            class="fullWidthButton"
+            label="Clear data"
+            onclick={clearData}
+          ></lightning-button>
+          <lightning-button
+            label="Calculate Flight"
+            onclick={calculateFlight}
+          ></lightning-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
