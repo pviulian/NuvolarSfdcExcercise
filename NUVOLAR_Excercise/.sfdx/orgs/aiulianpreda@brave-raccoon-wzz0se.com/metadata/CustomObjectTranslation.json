@@ -1,0 +1,31 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "005Qy000002JlNxIAK",
+      "createdByName": "Iulian Preda",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/NV_obj_flightData__c-en_US.objectTranslation",
+      "fullName": "NV_obj_flightData__c-en_US",
+      "id": "",
+      "lastModifiedById": "005Qy000002JlNxIAK",
+      "lastModifiedByName": "Iulian Preda",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "005Qy000002JlNxIAK",
+      "createdByName": "Iulian Preda",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/NV_obj_airport__c-en_US.objectTranslation",
+      "fullName": "NV_obj_airport__c-en_US",
+      "id": "",
+      "lastModifiedById": "005Qy000002JlNxIAK",
+      "lastModifiedByName": "Iulian Preda",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    }
+  ]
+}
