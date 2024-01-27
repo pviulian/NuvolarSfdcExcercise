@@ -125,7 +125,7 @@ public with sharing class NV_cls_controller{
     * @param arrivalAirport IATA code
     * @return Map<String, NV_obj_airport__c> Map filled with the IATA code as the primary key and the airport details as the value.
     **/
-    private static Map<String, NV_obj_airport__c> retrieveAirportId(Map<String, NV_obj_airport__c> mapIataCodeWithAirportId, String departureAirport, String arrivalAirport){
+    public static Map<String, NV_obj_airport__c> retrieveAirportId(Map<String, NV_obj_airport__c> mapIataCodeWithAirportId, String departureAirport, String arrivalAirport){
         try{
             for (NV_obj_airport__c airport : [SELECT Id, NV_fld_airportIATA__c, NV_fld_airportLatitude__c, NV_fld_airportLongitude__c
                                               FROM NV_obj_airport__c
@@ -236,7 +236,7 @@ public with sharing class NV_cls_controller{
     * @param lstErrorFields 
     * @return List<errorMessages> returns a list if any of the conditions are met.
     **/
-    private static List<errorMessages> checkFields(String name, String iataCode, Decimal longitude, Decimal latitude, List<errorMessages> lstErrorFields){
+    public static List<errorMessages> checkFields(String name, String iataCode, Decimal longitude, Decimal latitude, List<errorMessages> lstErrorFields){
         errorMessages validateField = new errorMessages();
 
         if (name == '' || name == null){
@@ -296,6 +296,7 @@ public with sharing class NV_cls_controller{
     * @param longitude2 
     * @return Decimal airport distance
     **/
+    @testVisible
     static Decimal calculateDistance(Decimal latitude1, Decimal longitude1, Decimal latitude2, Decimal longitude2){
 
         Integer earthRadius = 6371 * 1000; // in meters
